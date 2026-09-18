@@ -1,0 +1,69 @@
+<?php
+
+namespace betterlite\yamada\player;
+
+use pocketmine\player\Player;
+use pocketmine\world\Position;
+
+class yPlayer{
+
+    private Player $player;
+    private ?Position $savedLocation = null;
+    private array $savedInventory = [];
+    private bool $alive = true;
+    private int $kills = 0;
+    private int $deaths = 0;
+
+    public function __construct(Player $player) {
+        $this->player = $player;
+    }
+
+    public function getPlayer(): Player {
+        return $this->player;
+    }
+
+    public function saveState(): void {
+        $this->savedLocation = $this->player->getPosition();
+
+        $inventory = [];
+        foreach ($this->player->getInventory()->getContents() as $slot => $item) {
+            $inventory[$slot] = $item;
+        }
+        $this->savedInventory = $inventory;
+    }
+
+    public function restoreState(): void {
+        if ($this->savedLocation !== null) {
+            $this->player->teleport($this->savedLocation);
+        }
+
+        $this->player->getInventory()->clearAll();
+        foreach ($this->savedInventory as $slot => $item) {
+            $this->player->getInventory()->setItem($slot, $item);
+        }
+    }
+
+    public function isAlive(): bool {
+        return $this->alive;
+    }
+
+    public function setAlive(bool $alive): void {
+        $this->alive = $alive;
+    }
+
+    public function addKill(): void {
+        $this->kills++;
+    }
+
+    public function addDeath(): void {
+        $this->deaths++;
+    }
+
+    public function getKills(): int {
+        return $this->kills;
+    }
+
+    public function getDeaths(): int {
+        return $this->deaths;
+    }
+}
