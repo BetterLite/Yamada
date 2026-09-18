@@ -14,7 +14,7 @@
 
 Current version: `0.1.0`
 
-Status: Usable (Early Release)
+Status: Not Usable (Early Release)
 
 Yamada is not to ready to use, however the project is still in an early development stage.
 There may be undiscovered bugs, unexpected behavior, or features that could change or be improved in future updates.
