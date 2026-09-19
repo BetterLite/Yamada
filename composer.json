@@ -2,7 +2,7 @@
   "name": "betterlite/yamada",
   "description": "API library for creating Minigames on PocketMine 5",
   "type": "library",
-  "keywords": ["pocketmine", "pocketmine-mp", "minigame", "api", "virion"],
+  "keywords": ["pocketmine", "pocketmine-mp", "minigame", "api"],
   "license": "MIT",
   "version": "0.2.0",
   "authors": [
@@ -19,21 +19,10 @@
     "php": "^8.1",
     "pocketmine/pocketmine-mp": "^5.0.0"
   },
-  "require-dev": {
-    "pocketmine/php-src": "*",
-  },
   "autoload": {
     "psr-4": {
       "betterlite\\yamada\\": "src/betterlite/yamada/"
     }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "betterlite\\yamada\\tests\\": "tests/"
-    }
-  },
-  "scripts": {
-    "test": "phpunit tests/"
   },
   "config": {
     "sort-packages": true,
