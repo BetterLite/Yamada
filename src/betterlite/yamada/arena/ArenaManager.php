@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace betterlite\yamada\arena;
 
 use betterlite\yamada\exception\ArenaException;
+use betterlite\yamada\game\CountdownManager;
 use pocketmine\player\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskHandler;
@@ -15,17 +16,20 @@ class ArenaManager {
     /** @var Arena[] */
     private array $arenas = [];
     private TaskScheduler $scheduler;
+    private CountdownManager $countdownManager;
     private ?TaskHandler $tickTask = null;
     private int $tickRate = 20;
 
     public function __construct(TaskScheduler $scheduler) {
         $this->scheduler = $scheduler;
+        $this->countdownManager = new CountdownManager($scheduler);
     }
 
     public function registerArena(Arena $arena): void {
         if (isset($this->arenas[$arena->getName()])) {
             throw new ArenaException("Arena {$arena->getName()} already registered");
         }
+        $arena->setCountdownManager($this->countdownManager);
         $this->arenas[$arena->getName()] = $arena;
     }
 
@@ -35,6 +39,7 @@ class ArenaManager {
         }
 
         $arena = $this->arenas[$name];
+        $this->countdownManager->stopCountdown($arena);
         if ($arena->getState() === ArenaState::RUNNING) {
             $arena->end();
         }
@@ -86,6 +91,10 @@ class ArenaManager {
         }
     }
 
+    public function getCountdownManager(): CountdownManager {
+        return $this->countdownManager;
+    }
+
     public function startTickTask(int $tickRate = 20): void {
         if ($this->tickTask !== null) {
             return;
@@ -115,6 +124,7 @@ class ArenaManager {
     }
 
     public function shutdown(): void {
+        $this->countdownManager->stopAll();
         $this->stopTickTask();
         foreach ($this->arenas as $arena) {
             if ($arena->getState() === ArenaState::RUNNING) {
